@@ -1,0 +1,130 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: 'Born2beroot debian setup'
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: yes
+  tasks:
+
+    - name: 'Update all packages to their latest version'
+      ansible.builtin.apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+        clean: yes
+
+    - name: 'Install openssh-server package'
+      ansible.builtin.apt:
+        name: openssh-server
+
+    - name: 'Start and enable ssh service'
+      ansible.builtin.service:
+        state: started
+        enabled: yes
+        name: ssh
+
+    - name: 'Set the sshd config settings'
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#+{{ item.key }}"
+        line: "{{ item.key }} {{ item.value }}"
+      with_items:
+        - { key: 'Port', value: '4242' }
+        - { key: 'PermitRootLogin', value: 'no' }
+        - { key: 'PubkeyAuthentication', value: 'yes' }
+        - { key: 'PasswordAuthentication', value: 'no' }
+        - { key: 'ChallengeResponseAuthentication', value: 'no' }
+
+    - name: 'Restart ssh service'
+      ansible.builtin.service:
+        name: ssh
+        state: restarted
+
+    - name: 'Install ufw package'
+      ansible.builtin.apt:
+        name: ufw
+
+    - name: 'Setup ufw to allow ssh port and be enabled'
+      ansible.builtin.command:
+        cmd: "/usr/sbin/ufw {{ item }}"
+      with_items:
+        - 'allow proto tcp to any port 4242 comment "allow-ssh"'
+        - '--force enable'
+
+    - name: 'Set hostname'
+      ansible.builtin.hostname:
+        name: abenamar42
+
+    - name: 'Replace old hostname'
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.1\.1'
+        line: "127.0.1.1\tabenamar42"
+
+    - name: 'Udpate password policy to respect 42 guidelines'
+      ansible.builtin.command:
+        cmd: "/usr/bin/chage -M 30 -m 2 -7 {{ item }}"
+      with_items:
+        - 'abenamar'
+        - 'root'
+
+    - name: 'Install libpam-cracklib package'
+      ansible.builtin.apt:
+        name: libpam-cracklib
+
+    - name: 'Edit /etc/pam.d/common-password to respect 42 guidelines'
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/common-password
+        insertbefore: '^# and here are more per-package modules'
+        line: "{{ item }}"
+      with_items:
+        - ''
+        - 'password required pam_cracklib.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root'
+        - ''
+
+    - name: 'Install sudo package'
+      ansible.builtin.apt:
+        name: sudo
+
+    # Configure strict sudo rules
+    - name: 'Edit /etc/sudoers'
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        regexp: "^Defaults(\\s+){{ item.key }}"
+        insertafter: '^Defaults'
+        line: "Defaults\t{{ item.value }}"
+      with_items:
+        - { key: 'passwd_tries', value: 'passwd_tries=3' }
+        - { key: 'badpass_message', value: 'badpass_message="Oh no! You have not really your sudo password, huh ??"' }
+        - { key: 'log_input', value: 'log_input' }
+        - { key: 'log_output', value: 'log_output' }
+        - { key: 'iolog_dir', value: 'iolog_dir="/var/log/sudo"' }
+        - { key: 'requiretty', value: 'requiretty' }
+        - { key: 'secure_path', value: 'secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"' }
+
+    - name: 'Ensure user42 and sudo group exist'
+      ansible.builtin.group:
+        name: "{{ item }}"
+      with_items:
+        - 'user42'
+        - 'sudo'
+
+    - name: 'Update user to respect to 42 guidelines'
+      ansible.builtin.user:
+        name: abenamar
+        groups: user42 sudo
+        password: "{{ Dummy1user|password_hash('sha512') }}"
+
+    - name: 'Update root to respect to 42 guidelines'
+      ansible.builtin.user:
+        name: root
+        password: "{{ Dummy1admin|password_hash('sha512') }}"
+
+    - name: 'Remove useless packages from the cache'
+      ansible.builtin.apt:
+        autoclean: yes
+
+    - name: 'Remove dependencies that are no longer required'
+      ansible.builtin.apt:
+        autoremove: yes
