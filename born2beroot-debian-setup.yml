@@ -64,7 +64,7 @@
 
     - name: 'Udpate password policy to respect 42 guidelines'
       ansible.builtin.command:
-        cmd: "/usr/bin/chage -M 30 -m 2 -7 {{ item }}"
+        cmd: "/usr/bin/chage -M 30 -m 2 -W 7 {{ item }}"
       with_items:
         - 'abenamar'
         - 'root'
