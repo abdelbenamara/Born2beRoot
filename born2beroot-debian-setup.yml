@@ -77,17 +77,12 @@
       ansible.builtin.lineinfile:
         path: /etc/pam.d/common-password
         insertbefore: '^# and here are more per-package modules'
-        line: "{{ item }}"
-      with_items:
-        - ''
-        - 'password required pam_cracklib.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root'
-        - ''
+        line: "\npassword required pam_cracklib.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root\n"
 
     - name: 'Install sudo package'
       ansible.builtin.apt:
         name: sudo
 
-    # Configure strict sudo rules
     - name: 'Edit /etc/sudoers'
       ansible.builtin.lineinfile:
         path: /etc/sudoers
@@ -113,13 +108,13 @@
     - name: 'Update user to respect to 42 guidelines'
       ansible.builtin.user:
         name: abenamar
-        groups: user42 sudo
-        password: "{{ Dummy1user|password_hash('sha512') }}"
+        groups: user42,sudo
+        password: "{{ 'Dummy1user' | password_hash('sha512') }}"
 
     - name: 'Update root to respect to 42 guidelines'
       ansible.builtin.user:
         name: root
-        password: "{{ Dummy1admin|password_hash('sha512') }}"
+        password: "{{ 'Dummy1admin' | password_hash('sha512') }}"
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
