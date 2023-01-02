@@ -29,7 +29,7 @@
         path: /etc/ssh/sshd_config
         regexp: "^#+{{ item.key }}"
         line: "{{ item.key }} {{ item.value }}"
-      with_items:
+      loop:
         - { key: 'Port', value: '4242' }
         - { key: 'PermitRootLogin', value: 'no' }
         - { key: 'PubkeyAuthentication', value: 'yes' }
@@ -48,7 +48,7 @@
     - name: 'Setup ufw to allow ssh port and be enabled'
       ansible.builtin.command:
         cmd: "/usr/sbin/ufw {{ item }}"
-      with_items:
+      loop:
         - 'allow proto tcp to any port 4242 comment "allow-ssh"'
         - '--force enable'
 
@@ -65,7 +65,7 @@
     - name: 'Udpate password policy to respect 42 guidelines'
       ansible.builtin.command:
         cmd: "/usr/bin/chage -M 30 -m 2 -W 7 {{ item }}"
-      with_items:
+      loop:
         - 'abenamar'
         - 'root'
 
@@ -89,7 +89,7 @@
         regexp: "^Defaults(\\s+){{ item.key }}"
         insertafter: '^Defaults'
         line: "Defaults\t{{ item.value }}"
-      with_items:
+      loop:
         - { key: 'passwd_tries', value: 'passwd_tries=3' }
         - { key: 'badpass_message', value: 'badpass_message="Oh no! You have not really your sudo password, huh ??"' }
         - { key: 'log_input', value: 'log_input' }
@@ -101,7 +101,7 @@
     - name: 'Ensure user42 and sudo group exist'
       ansible.builtin.group:
         name: "{{ item }}"
-      with_items:
+      loop:
         - 'user42'
         - 'sudo'
 
@@ -135,7 +135,7 @@
     - name: 'Bonus #1 : Resize debian-vg home'
       ansible.builtin.command:
         cmd: "{{ item }}"
-      with_items:
+      loop:
         - '/usr/bin/umount /home'
         - '/usr/sbin/e2fsck -fy /dev/debian-vg/home'
         - '/usr/sbin/resize2fs /dev/debian-vg/home 1G'
@@ -145,7 +145,7 @@
     - name: 'Bonus #1 : Create new debian-vg logical volumes'
       ansible.builtin.command:
         cmd: "/usr/sbin/lvcreate -n {{ item }} -L 500M debian-vg"
-      with_items:
+      loop:
         - 'var'
         - 'srv'
         - 'tmp'
@@ -154,7 +154,7 @@
     - name: 'Bonus #1 : Create new ext4 filesystems'
       ansible.builtin.command:
         cmd: "/usr/sbin/mkfs.ext4 /dev/debian-vg/{{ item }}"
-      with_items:
+      loop:
         - 'var'
         - 'srv'
         - 'tmp'
@@ -165,7 +165,7 @@
         path: /etc/fstab
         line: "/dev/debian-vg/{{ item.key }} {{ item.value }} ext4 defaults 0 2"
         backup: yes
-      with_items:
+      loop:
         - { key: 'var', value: '/var' }
         - { key: 'srv', value: '/srv' }
         - { key: 'tmp', value: '/tmp' }
@@ -177,7 +177,7 @@
         state: directory
         recurse: yes
         mode: '0755'
-      with_items:
+      loop:
         - '/var'
         - '/srv'
         - '/tmp'
