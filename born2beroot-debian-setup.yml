@@ -185,7 +185,7 @@
     - name: 'Bonus #1 : Backup data in future mounting points'
       ansible.builtin.copy:
         src: "{{ item }}/"
-        dest: "{{ item }}.ori/"
+        dest: "{{ item }}.ori"
       loop:
         - '/var'
         - '/srv'
@@ -202,7 +202,7 @@
     - name: 'Bonus #1 : Recover data in /var, /srv and /tmp'
       ansible.builtin.copy:
         src: "{{ item }}.ori/"
-        dest: "{{ item }}/"
+        dest: "{{ item }}"
       loop:
         - '/var'
         - '/srv'
@@ -215,11 +215,11 @@
     - name: 'Bonus #1 : Recover data in /var/log'
       ansible.builtin.copy:
         src: "/var.ori/log/"
-        dest: "/var/log/"
+        dest: "/var/log"
 
     - name: 'Bonus #1 : Delete temporary directories used to mount new filesystems'
       ansible.builtin.file:
-        path: "{{ item }}.ori/"
+        path: "{{ item }}.ori"
         state: absent
       loop:
         - '/var'
