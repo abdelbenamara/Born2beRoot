@@ -172,7 +172,7 @@
         - { key: 'var-log', value: '/var/log' }
 
     - name: 'Bonus #1 : Create new mounting points'
-      ansible.builtin.file:
+      ansible.builtin.command:
         cmd: "/usr/bin/mkdir -p {{ item }}"
       loop:
         - '/var/log'
