@@ -153,7 +153,7 @@
 
     - name: 'Bonus #1 : Create new ext4 filesystems'
       ansible.builtin.command:
-        cmd: "/usr/bin/mkfs.ext4 /dev/debian-vg/{{ item }}"
+        cmd: "/usr/sbin/mkfs.ext4 /dev/debian-vg/{{ item }}"
       with_items:
         - 'var'
         - 'srv'
