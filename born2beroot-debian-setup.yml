@@ -116,6 +116,18 @@
         name: root
         password: "{{ 'Dummy1admin' | password_hash('sha512') }}"
 
+    - name: 'Download monitoring.sh'
+      ansible.builtin.get_url:
+        url: 'https://raw.githubusercontent.com/abdelbenamara/Born2beRoot/main/monitoring.sh'
+        dest: '/root/monitoring.sh'
+        mode: '0111'
+
+    - name: 'Cron monitoring.sh'
+      ansible.builtin.cron:
+        name: 'wall monitoring job'
+        minutes: "*/10"
+        job: '/root/monitoring.sh'
+
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
         autoclean: yes
