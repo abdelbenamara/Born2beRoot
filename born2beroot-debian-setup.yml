@@ -119,14 +119,14 @@
     - name: 'Download monitoring.sh'
       ansible.builtin.get_url:
         url: 'https://raw.githubusercontent.com/abdelbenamara/Born2beRoot/main/monitoring.sh'
-        dest: '/root/monitoring.sh'
+        dest: '/usr/local/bin/monitoring.sh'
         mode: '0111'
 
     - name: 'Cron monitoring.sh'
       ansible.builtin.cron:
         name: 'wall monitoring job'
         minute: "*/10"
-        job: '/root/monitoring.sh'
+        job: '/usr/local/bin/monitoring.sh'
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
