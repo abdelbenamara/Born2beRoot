@@ -161,7 +161,7 @@
         - 'var-log'
 
     - name: 'Bonus #1 : Edit /etc/fstab to add new filesystems informations'
-      ansible.builtin.command:
+      ansible.builtin.lineinfile:
         cmd: "/dev/debian-vg/{{ item.key }} {{ item.value }} ext4 defaults 0 2"
         backup: yes
       with_items:
