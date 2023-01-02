@@ -184,7 +184,7 @@
 
     - name: 'Bonus #1 : Backup data in future mounting points'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r {{ item }} {{ item }}.ori"
+        cmd: "/usr/bin/cp -r {{ item }}/. {{ item }}.ori"
       loop:
         - '/var'
         - '/srv'
@@ -200,7 +200,7 @@
 
     - name: 'Bonus #1 : Recover data in /var, /srv and /tmp'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r {{ item }}.ori {{ item }}"
+        cmd: "/usr/bin/cp -r {{ item }}.ori/. {{ item }}"
       loop:
         - '/var'
         - '/srv'
@@ -212,7 +212,7 @@
 
     - name: 'Bonus #1 : Recover data in /var/log'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r /var.ori/log /var/log"
+        cmd: "/usr/bin/cp -r /var.ori/log/. /var/log"
 
     - name: 'Bonus #1 : Delete temporary directories used to mount new filesystems'
       ansible.builtin.file:
