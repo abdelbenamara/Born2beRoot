@@ -175,6 +175,9 @@
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
+        recurse: yes
+        owner: root
+        group: root
         mode: '0755'
       with_items:
         - '/var'
