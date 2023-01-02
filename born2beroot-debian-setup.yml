@@ -194,6 +194,7 @@
       ansible.builtin.command:
         cmd: "/usr/bin/mount {{ item }}"
       loop:
+        - '/home'
         - '/var'
         - '/srv'
         - '/tmp'
