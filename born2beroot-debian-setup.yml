@@ -173,7 +173,12 @@
 
     - name: 'Bonus #1 : Mount all filesystems'
       ansible.builtin.command:
-        cmd: '/usr/bin/mount -a'
+        cmd: "/usr/bin/mount --bind {{ item }} {{ item }}"
+      loop:
+        - 'var'
+        - 'srv'
+        - 'tmp'
+        - 'var-log'
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
