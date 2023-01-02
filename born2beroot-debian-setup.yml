@@ -190,7 +190,7 @@
         - '/srv'
         - '/tmp'
 
-    - name: 'Bonus #1 : Mount /var, /srv and /tmp filesystems'
+    - name: 'Bonus #1 : Mount /home, /var, /srv and /tmp filesystems'
       ansible.builtin.command:
         cmd: "/usr/bin/mount {{ item }}"
       loop:
