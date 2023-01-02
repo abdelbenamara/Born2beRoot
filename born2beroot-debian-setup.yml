@@ -171,14 +171,6 @@
         - { key: 'tmp', value: '/tmp' }
         - { key: 'var-log', value: '/var/log' }
 
-    - name: 'Bonus #1 : Create new mounting points'
-      ansible.builtin.command:
-        cmd: "/usr/bin/mkdir -p {{ item }}"
-      loop:
-        - '/var/log'
-        - '/srv'
-        - '/tmp'
-
     - name: 'Bonus #1 : Mount all filesystems'
       ansible.builtin.command:
         cmd: '/usr/bin/mount -a'
