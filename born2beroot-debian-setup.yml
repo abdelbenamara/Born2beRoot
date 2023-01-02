@@ -176,13 +176,12 @@
         path: "{{ item }}"
         state: directory
         recurse: yes
-        owner: root
-        group: root
         mode: '0755'
       with_items:
-        - '/srv'
-        - '/tmp'
-        - '/var/log'
+        - '/var/'
+        - '/srv/'
+        - '/tmp/'
+        - '/var/log/'
 
     - name: 'Bonus #1 : Mount all filesystems'
       ansible.builtin.command:
