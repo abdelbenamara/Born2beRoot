@@ -175,10 +175,10 @@
       ansible.builtin.command:
         cmd: "/usr/bin/mount --bind {{ item }} {{ item }}"
       loop:
-        - 'var'
-        - 'srv'
-        - 'tmp'
-        - 'var-log'
+        - '/var'
+        - '/srv'
+        - '/tmp'
+        - '/var/log'
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
