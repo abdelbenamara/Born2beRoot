@@ -163,7 +163,7 @@
     - name: 'Bonus #1 : Edit /etc/fstab to add new filesystems informations'
       ansible.builtin.lineinfile:
         path: /etc/fstab
-        line: "/dev/debian-vg/{{ item.key }} {{ item.value }} ext4 defaults 0 2"
+        line: "/dev/debian-vg/{{ item.key }} {{ item.value }} ext4 defaults 1 2"
         backup: yes
       loop:
         - { key: 'var', value: '/var' }
