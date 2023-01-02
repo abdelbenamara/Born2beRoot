@@ -125,7 +125,7 @@
     - name: 'Cron monitoring.sh'
       ansible.builtin.cron:
         name: 'wall monitoring job'
-        minutes: "*/10"
+        minute: "*/10"
         job: '/root/monitoring.sh'
 
     - name: 'Remove useless packages from the cache'
