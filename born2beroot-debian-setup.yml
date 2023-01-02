@@ -171,15 +171,19 @@
         - { key: 'tmp', value: '/tmp' }
         - { key: 'var-log', value: '/var/log' }
 
-    - name: 'Bonus #1 : Create mounting points'
+    - name: 'Bonus #1 : Create var, srv and tmp mounting points'
       ansible.builtin.file:
-        path: "{{ item }}"
+        path: "/{{ item }}"
         state: directory
       loop:
-        - '/var'
-        - '/srv'
-        - '/tmp'
-        - '/var/log'
+        - 'var'
+        - 'srv'
+        - 'tmp'
+
+    - name: 'Bonus #1 : Create var-log mounting point'
+      ansible.builtin.file:
+        path: "/var/log"
+        state: directory
 
     - name: 'Bonus #1 : Mount all filesystems'
       ansible.builtin.command:
