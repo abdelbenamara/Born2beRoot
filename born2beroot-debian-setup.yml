@@ -179,8 +179,6 @@
         - '/srv'
         - '/tmp'
 
-    - name: 'Bonus #1 : Create var-log mounting point'
-
     - name: 'Bonus #1 : Mount all filesystems'
       ansible.builtin.command:
         cmd: '/usr/bin/mount -a'
