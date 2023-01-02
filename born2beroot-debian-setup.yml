@@ -184,7 +184,7 @@
 
     - name: 'Bonus #1 : Backup data in future mounting points'
       ansible.builtin.copy:
-        path: "{{ item }}"
+        src: "{{ item }}"
         dest: "{{ item }}.ori"
         directory_mode: yes
       loop:
@@ -202,7 +202,7 @@
 
     - name: 'Bonus #1 : Recover data in /var, /srv and /tmp'
       ansible.builtin.copy:
-        path: "{{ item }}.ori"
+        src: "{{ item }}.ori"
         dest: "{{ item }}"
         directory_mode: yes
       loop:
@@ -216,7 +216,7 @@
 
     - name: 'Bonus #1 : Recover data in /var/log'
       ansible.builtin.copy:
-        path: "/var.ori/log"
+        src: "/var.ori/log"
         dest: "/var/log"
         directory_mode: yes
 
