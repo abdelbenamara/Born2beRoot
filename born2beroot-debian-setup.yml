@@ -128,6 +128,63 @@
         minute: "*/10"
         job: '/usr/local/bin/monitoring.sh'
 
+    - name: 'Bonus #1 : Install lvm2 package'
+      ansible.builtin.apt:
+        name: lvm2
+
+    - name: 'Bonus #1 : Resize debian-vg home'
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      with_items:
+        - '/usr/bin/umount /home'
+        - '/usr/sbin/e2fsck -fy /dev/debian-vg/home'
+        - '/usr/sbin/resize2fs /dev/debian-vg/home 1G'
+        - '/usr/sbin/lvreduce -f -L 1G /dev/debian-vg/home'
+        - '/usr/sbin/resize2fs /dev/debian-vg/home'
+
+    - name: 'Bonus #1 : Create new debian-vg logical volumes'
+      ansible.builtin.command:
+        cmd: "/usr/sbin/lvcreate -n {{ item }} -L 500M debian-vg"
+      with_items:
+        - 'var'
+        - 'srv'
+        - 'tmp'
+        - 'var-log'
+
+    - name: 'Bonus #1 : Create new ext4 filesystems'
+      ansible.builtin.command:
+        cmd: "/usr/bin/mkfs.ext4 /dev/debian-vg/{{ item }}"
+      with_items:
+        - 'var'
+        - 'srv'
+        - 'tmp'
+        - 'var-log'
+
+    - name: 'Bonus #1 : Edit /etc/fstab to add new filesystems informations'
+      ansible.builtin.command:
+        cmd: "/dev/debian-vg/{{ item.key }} {{ item.value }} ext4 defaults 0 2"
+        backup: yes
+      with_items:
+        - { key: 'var', value: '/var' }
+        - { key: 'srv', value: '/srv' }
+        - { key: 'tmp', value: '/tmp' }
+        - { key: 'var-log', value: '/var/log' }
+
+    - name: 'Bonus #1 : Create mounting points'
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - '/var'
+        - '/srv'
+        - '/tmp'
+        - '/var/log'
+
+    - name: 'Bonus #1 : Mount all filesystems'
+      ansible.builtin.command:
+        cmd: '/usr/bin/mount -a'
+
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
         autoclean: yes
