@@ -171,15 +171,64 @@
         - { key: 'tmp', value: '/tmp' }
         - { key: 'var-log', value: '/var/log' }
 
-    - name: 'Bonus #1 : Mount all filesystems'
-      ansible.builtin.command:
-        cmd: "/usr/bin/mount --bind {{ item }} {{ item }}"
+    - name: 'Bonus #1 : Ensure new mounting points exists'
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        recurse: yes
       loop:
         - '/var'
         - '/srv'
         - '/tmp'
         - '/var/log'
 
+    - name: 'Bonus #1 : Backup data in future mounting points'
+      ansible.builtin.copy:
+        path: "{{ item }}"
+        dest: "{{ item }}.ori"
+        directory_mode: yes
+      loop:
+        - '/var'
+        - '/srv'
+        - '/tmp'
+
+    - name: 'Bonus #1 : Mount /var, /srv and /tmp filesystems'
+      ansible.builtin.command:
+        cmd: "/usr/bin/mount {{ item }}"
+      loop:
+        - '/var'
+        - '/srv'
+        - '/tmp'
+
+    - name: 'Bonus #1 : Recover data in /var, /srv and /tmp'
+      ansible.builtin.copy:
+        path: "{{ item }}.ori"
+        dest: "{{ item }}"
+        directory_mode: yes
+      loop:
+        - '/var'
+        - '/srv'
+        - '/tmp'
+
+    - name: 'Bonus #1 : Mount /var/log filesystem'
+      ansible.builtin.command:
+        cmd: "/usr/bin/mount /var/log"
+
+    - name: 'Bonus #1 : Recover data in /var/log'
+      ansible.builtin.copy:
+        path: "/var.ori/log"
+        dest: "/var/log"
+        directory_mode: yes
+
+    - name: 'Bonus #1 : Delete temporary directories used to mount new filesystems'
+      ansible.builtin.file:
+        path: "{{ item }}.ori"
+        state: absent
+      loop:
+        - '/var'
+        - '/srv'
+        - '/tmp'
+        
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
         autoclean: yes
