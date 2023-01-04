@@ -235,29 +235,14 @@
       ansible.builtin.apt:
         name: mariadb-server
 
-    - name: 'Bonus #2 : Secure MariaDB installation'
-      ansible.builtin.expect:
-        command: '/usr/bin/mysql_secure_installation'
-        echo: yes
-        responses:
-          'Enter current password for root': 'root'
-          'Switch to unix_socket authentication': 'n'
-          'Change the root password': 'n'
-          'Remove anonymous users': 'Y'
-          'Disallow root login remotely': 'Y'
-          'Remove test database and access to it': 'Y'
-          'Reload privilege tables now': 'Y'
-        timeout: 1
-
-    - name: 'Bonus #2 : Restart mysql service'
-      ansible.builtin.service:
-        name: mysql
-        state: restarted
-
-    - name: 'Bonus #2 : Create new database and user for WordPress'
+    - name: 'Bonus #2 : Secure MariaDB installation and create new database and user for WordPress'
       ansible.builtin.command:
         cmd: "{{ item }}"
       loop:
+        - "/usr/bin/mysql -e \"DELETE FROM mysql.user WHERE User='';\""
+        - "/usr/bin/mysql -e \"DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');\""
+        - "/usr/bin/mysql -e 'DROP DATABASE IF EXISTS test;'"
+        - "/usr/bin/mysql -e \"DELETE FROM mysql.db WHERE Db='test' OR Db='test\\\\_%';\""
         - "/usr/bin/mysql -e 'CREATE DATABASE wordpress;'"
         - "/usr/bin/mysql -e \"GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wordpress_pss123';\""
         - "/usr/bin/mysql -e 'FLUSH PRIVILEGES;'"
