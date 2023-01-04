@@ -145,7 +145,7 @@
       loop:
         - { key: 'var', value: '2G' }
         - { key: 'srv', value: '200M' }
-        - { key: 'tmp', value: '700M' }
+        - { key: 'tmp', value: '600M' }
         - { key: 'var-log', value: '500M' }
 
     - name: 'Bonus #1 : Create new ext4 filesystems'
