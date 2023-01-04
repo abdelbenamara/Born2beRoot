@@ -240,13 +240,13 @@
         command: '/usr/bin/mysql_secure_installation'
         echo: yes
         responses:
-          'Enter current password for root \(enter for none\):': 'root'
-          'Switch to unix_socket authentication [Y/n]': 'n'
-          'Change the root password? [Y/n]': 'n'
-          'Remove anonymous users? [Y/n]': 'Y'
-          'Disallow root login remotely ? [Y/n]': 'Y'
-          'Remove test database and access to it? [Y/n]': 'Y'
-          'Reload privilege tables now? [Y/n]': 'Y'
+          'Enter current password for root': 'root'
+          'Switch to unix_socket authentication': 'n'
+          'Change the root password': 'n'
+          'Remove anonymous users': 'Y'
+          'Disallow root login remotely': 'Y'
+          'Remove test database and access to it': 'Y'
+          'Reload privilege tables now': 'Y'
         timeout: 1
 
     - name: 'Bonus #2 : Restart mysql service'
