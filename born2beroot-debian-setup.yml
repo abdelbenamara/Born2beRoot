@@ -20,9 +20,9 @@
 
     - name: 'Start and enable ssh service'
       ansible.builtin.service:
+        name: ssh
         state: started
         enabled: yes
-        name: ssh
 
     - name: 'Set the sshd config settings'
       ansible.builtin.lineinfile:
@@ -227,9 +227,9 @@
 
     - name: 'Bonus #2 : Start and enable lighttpd service'
       ansible.builtin.service:
+        name: lighttpd
         state: started
         enabled: yes
-        name: lighttpd
 
     - name: 'Bonus #2 : Install mariadb-server package'
       ansible.builtin.apt:
@@ -237,9 +237,9 @@
 
     - name: 'Bonus #2 : Start and enable mysql service'
       ansible.builtin.service:
+        name: mysql
         state: started
         enabled: yes
-        name: mysql
 
     - name: 'Bonus #2 : Secure MariaDB installation and create new database and user for WordPress'
       ansible.builtin.command:
