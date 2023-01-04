@@ -235,6 +235,12 @@
       ansible.builtin.apt:
         name: mariadb-server
 
+    - name: 'Bonus #2 : Start and enable mysql service'
+      ansible.builtin.service:
+        state: started
+        enabled: yes
+        name: mysql
+
     - name: 'Bonus #2 : Secure MariaDB installation and create new database and user for WordPress'
       ansible.builtin.command:
         cmd: "{{ item }}"
@@ -246,6 +252,11 @@
         - "/usr/bin/mysql -e 'CREATE DATABASE wordpress;'"
         - "/usr/bin/mysql -e \"GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wordpress_pss123';\""
         - "/usr/bin/mysql -e 'FLUSH PRIVILEGES;'"
+
+    - name: 'Restart mysql service'
+      ansible.builtin.service:
+        name: mysql
+        state: restarted
 
     - name: 'Bonus #2 : Install php7.3 php7.3-fpm php7.3-mysql php7.3-cli php7.3-curl php7.3-xml php-json php-zip php-mbstring php-gd php-intl and php-cgi packages'
       ansible.builtin.apt:
