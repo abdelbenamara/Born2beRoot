@@ -6,6 +6,7 @@ main () {
 	apt install python3-pip -y
 	pip install --upgrade pip setuptools wheel
 	pip install ansible-core
+	pip install pexpect
 	wget https://raw.githubusercontent.com/abdelbenamara/Born2beRoot/main/born2beroot-debian-setup.yml
 	ansible-playbook born2beroot-debian-setup.yml
 }
