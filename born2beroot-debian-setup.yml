@@ -135,18 +135,18 @@
       loop:
         - '/usr/bin/umount /home'
         - '/usr/sbin/e2fsck -fy /dev/debian-vg/home'
-        - '/usr/sbin/resize2fs /dev/debian-vg/home 1G'
+        - '/usr/sbin/resize2fs /dev/debian-vg/home 300M'
         - '/usr/sbin/lvreduce -f -L 1G /dev/debian-vg/home'
         - '/usr/sbin/resize2fs /dev/debian-vg/home'
 
     - name: 'Bonus #1 : Create new debian-vg logical volumes'
       ansible.builtin.command:
-        cmd: "/usr/sbin/lvcreate -n {{ item }} -L 500M debian-vg"
+        cmd: "/usr/sbin/lvcreate -n {{ item.key }} -L {{ item.value }} debian-vg"
       loop:
-        - 'var'
-        - 'srv'
-        - 'tmp'
-        - 'var-log'
+        - { key: 'var', value: '2G' }
+        - { key: 'srv', value: '200M' }
+        - { key: 'tmp', value: '700M' }
+        - { key: 'var-log', value: '500M' }
 
     - name: 'Bonus #1 : Create new ext4 filesystems'
       ansible.builtin.command:
@@ -181,7 +181,7 @@
 
     - name: 'Bonus #1 : Backup data in future mounting points'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r {{ item }}/. {{ item }}.ori"
+        cmd: "/usr/bin/cp -a {{ item }}/. {{ item }}.ori"
       loop:
         - '/var'
         - '/srv'
@@ -198,7 +198,7 @@
 
     - name: 'Bonus #1 : Recover data in /var, /srv and /tmp'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r {{ item }}.ori/. {{ item }}"
+        cmd: "/usr/bin/cp -a {{ item }}.ori/. {{ item }}"
       loop:
         - '/var'
         - '/srv'
@@ -210,7 +210,7 @@
 
     - name: 'Bonus #1 : Recover data in /var/log'
       ansible.builtin.command:
-        cmd: "/usr/bin/cp -r /var.ori/log/. /var/log"
+        cmd: "/usr/bin/cp -a /var.ori/log/. /var/log"
 
     - name: 'Bonus #1 : Delete temporary directories used to mount new filesystems'
       ansible.builtin.file:
