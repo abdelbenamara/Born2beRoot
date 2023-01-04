@@ -239,7 +239,7 @@
       ansible.builtin.expect:
         command: '/usr/bin/mysql_secure_installation'
         responses:
-          'Enter current password for root (enter for none): ': 'root'
+          'Enter current password for root \(enter for none\): ': 'root'
           'Switch to unix_socket authentication [Y/n] ': 'n'
           'Change the root password? [Y/n] ': 'n'
           'Remove anonymous users? [Y/n] ': 'Y'
