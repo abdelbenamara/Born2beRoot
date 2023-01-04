@@ -136,7 +136,7 @@
         - '/usr/bin/umount /home'
         - '/usr/sbin/e2fsck -fy /dev/debian-vg/home'
         - '/usr/sbin/resize2fs /dev/debian-vg/home 300M'
-        - '/usr/sbin/lvreduce -f -L 1G /dev/debian-vg/home'
+        - '/usr/sbin/lvreduce -f -L 300M /dev/debian-vg/home'
         - '/usr/sbin/resize2fs /dev/debian-vg/home'
 
     - name: 'Bonus #1 : Create new debian-vg logical volumes'
@@ -145,7 +145,7 @@
       loop:
         - { key: 'var', value: '2G' }
         - { key: 'srv', value: '200M' }
-        - { key: 'tmp', value: '600M' }
+        - { key: 'tmp', value: '700M' }
         - { key: 'var-log', value: '500M' }
 
     - name: 'Bonus #1 : Create new ext4 filesystems'
