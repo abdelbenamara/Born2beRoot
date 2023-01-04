@@ -145,8 +145,8 @@
       loop:
         - { key: 'var', value: '2G' }
         - { key: 'srv', value: '200M' }
-        - { key: 'tmp', value: '700M' }
-        - { key: 'var-log', value: '500M' }
+        - { key: 'tmp', value: '500M' }
+        - { key: 'var-log', value: '700M' }
 
     - name: 'Bonus #1 : Create new ext4 filesystems'
       ansible.builtin.command:
@@ -258,16 +258,16 @@
         name: mysql
         state: restarted
 
-    - name: 'Bonus #2 : Install php7.3 php7.3-fpm php7.3-mysql php7.3-cli php7.3-curl php7.3-xml php-json php-zip php-mbstring php-gd php-intl and php-cgi packages'
+    - name: 'Bonus #2 : Install php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-curl php7.4-xml php-json php-zip php-mbstring php-gd php-intl and php-cgi packages'
       ansible.builtin.apt:
         name: "{{ item }}"
       loop:
-        - 'php7.3'
-        - 'php7.3-fpm'
-        - 'php7.3-mysql'
-        - 'php7.3-cli'
-        - 'php7.3-curl'
-        - 'php7.3-xml'
+        - 'php7.4'
+        - 'php7.4-fpm'
+        - 'php7.4-mysql'
+        - 'php7.4-cli'
+        - 'php7.4-curl'
+        - 'php7.4-xml'
         - 'php-json'
         - 'php-zip'
         - 'php-mbstring'
