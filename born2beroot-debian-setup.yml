@@ -235,12 +235,6 @@
       ansible.builtin.apt:
         name: mariadb-server
 
-    - name: 'Bonus #2 : Start and enable mysql service'
-      ansible.builtin.service:
-        state: started
-        enabled: yes
-        name: mysql
-
     - name: 'Bonus #2 : Secure MariaDB installation'
       ansible.builtin.expect:
         command: '/usr/bin/mysql_secure_installation'
