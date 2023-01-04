@@ -32,9 +32,6 @@
       loop:
         - { key: 'Port', value: '4242' }
         - { key: 'PermitRootLogin', value: 'no' }
-        - { key: 'PubkeyAuthentication', value: 'yes' }
-        - { key: 'PasswordAuthentication', value: 'no' }
-        - { key: 'ChallengeResponseAuthentication', value: 'no' }
 
     - name: 'Restart ssh service'
       ansible.builtin.service:
