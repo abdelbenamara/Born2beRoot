@@ -42,7 +42,7 @@
       ansible.builtin.apt:
         name: ufw
 
-    - name: 'Setup ufw to allow ssh port and be enabled'
+    - name: 'Enable ufw and allow ssh port'
       ansible.builtin.command:
         cmd: "/usr/sbin/ufw {{ item }}"
       loop:
@@ -230,6 +230,10 @@
         name: lighttpd
         state: started
         enabled: yes
+
+    - name: 'Allow http port'
+      ansible.builtin.command:
+        cmd: '/usr/sbin/ufw allow proto tcp to any port 80 comment "allow-http"'
 
     - name: 'Bonus #2 : Install mariadb-server package'
       ansible.builtin.apt:
