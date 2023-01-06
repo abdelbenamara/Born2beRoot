@@ -288,6 +288,15 @@
         - 'lighttpd'
         - 'php7.4-fpm'
 
+    - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
     - name: 'Bonus #2 : Install mariadb-server package'
       ansible.builtin.apt:
         name: mariadb-server
