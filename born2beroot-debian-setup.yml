@@ -315,11 +315,22 @@
         name: mysql
         state: restarted
 
-    - name: 'Bonus #2 : Download and unarchive wordpress'
-      ansible.builtin.unarchive:
+    - name: 'Bonus #2 : Download wordpress archive in /tmp'
+      ansible.builtin.get_url:
         src: 'https://wordpress.org/latest.tar.gz'
-        dest: /var/www/html/wordpress.42bonus.lan
-        remote_src: yes
+        dest: '/tmp/latest.tar.gz'
+
+    - name: 'Bonus #2 : Extract wordpress archive and move it to /var/www/html'
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      loop:
+        - '/usr/bin/tar -xvzf /tmp/latest.tar.gz --directory /var/www/html'
+        - '/usr/bin/mv /var/www/html/wordpress/ /var/www/html/wordpress.42bonus.lan'
+
+    - name: 'Bonus #2 : Delete wordpress archive from /tmp'
+      ansible.builtin.file:
+        path: '/tmp/latest.tar.gz'
+        state: absent
 
     - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
       ansible.builtin.file:
