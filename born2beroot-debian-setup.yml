@@ -317,7 +317,7 @@
 
     - name: 'Bonus #2 : Download wordpress archive in /tmp'
       ansible.builtin.get_url:
-        src: 'https://wordpress.org/latest.tar.gz'
+        url: 'https://wordpress.org/latest.tar.gz'
         dest: '/tmp/latest.tar.gz'
 
     - name: 'Bonus #2 : Extract wordpress archive and move it to /var/www/html'
