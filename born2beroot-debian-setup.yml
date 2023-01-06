@@ -49,11 +49,13 @@
         - 'allow proto tcp to any port 4242 comment "allow-ssh"'
         - '--force enable'
 
-    - name: 'Set hostname'
-      ansible.builtin.hostname:
-        name: abenamar42
+    - name: 'Change hostname'
+      ansible.builtin.lineinfile:
+        path: /etc/hostname
+        regexp: '^.+'
+        line: 'abenamar42'
 
-    - name: 'Replace old hostname'
+    - name: 'Replace old hostname in /etc/hosts'
       ansible.builtin.lineinfile:
         path: /etc/hosts
         regexp: '^127\.0\.1\.1'
