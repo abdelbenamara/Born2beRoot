@@ -251,6 +251,12 @@
         - 'php-intl'
         - 'php-cgi'
 
+    - name: 'Bonus #2 : Start and enable php7.4-fpm service'
+      ansible.builtin.service:
+        name: php7.4-fpm
+        state: started
+        enabled: yes
+
     - name: 'Bonus #2 : Edit php7.4-fpm configuration file'
       ansible.builtin.lineinfile:
         path: /etc/php/7.4/fpm/pool.d/www.conf
@@ -269,7 +275,7 @@
 
     - name: 'Bonus #2 : Enable php-fpm on lighttpd'
       ansible.builtin.command:
-        cmd: "/usr/bin/lighty-enable-mod {{ item }}"
+        cmd: "/usr/sbin/lighty-enable-mod {{ item }}"
       loop:
         - 'fastcgi'
         - 'fastcgi-php'
