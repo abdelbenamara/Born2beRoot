@@ -339,7 +339,7 @@
       loop:
         - { key: 'download', value: '--locale=fr_FR' }
         - { key: 'config', value: '--dbname=wordpress --dbuser=wordpress_user --dbpass=wordpress_pass' }
-        - { key: 'install', value: '--url=http://localhost/42.abenamar --title=42.abenamar --admin_user=admin --admin_password=admin --admin_email=abenamar@student.42.fr' }
+        - { key: 'install', value: '--url=http://localhost:4221/42.abenamar --title=42.abenamar --admin_user=admin --admin_password=admin --admin_email=abenamar@student.42.fr' }
 
     - name: 'Bonus #2 : Create folder dedicated to virtual hosts in Lighttpd'
       ansible.builtin.file:
