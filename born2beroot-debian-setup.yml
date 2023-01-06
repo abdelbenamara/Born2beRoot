@@ -384,7 +384,7 @@
         - ''
         - '[sshd]'
         - 'enabled = true'
-        - 'port = 1252'
+        - 'port = 4242'
         - 'maxretry = 5'
 
     - name: 'Bonus #3.1 : Restart fail2ban service'
