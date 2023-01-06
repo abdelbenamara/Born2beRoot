@@ -388,7 +388,15 @@
 
     - name: 'Bonus #2 : Setup wordpress with wp-cli'
       ansible.builtin.command:
-        cmd: "/usr/bin/sudo -u abenamar -i -- /usr/local/bin/wp core install --url=http://42bonus.wp --title=42bonus.wp --admin_user=admin —-admin_password=admin —-admin_email=abenamar@student.42.fr"
+        argv: 
+          - /usr/bin/sudo -u abenamar -i
+          - -- /usr/local/bin/wp core install
+          - --path=/var/www/html/42bonus.wp
+          - --url=http://42bonus.wp
+          - --title=42bonus.wp
+          - --admin_user=admin
+          - —-admin_password=admin
+          - —-admin_email=abenamar@student.42.fr
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
