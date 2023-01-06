@@ -391,14 +391,12 @@
         argv: 
           - /usr/bin/sudo 
           - -u
-          - abenamar
-          - -i
+          - www-data
           - --
           - /usr/local/bin/wp
           - core
           - install
           - --path=/var/www/html/42bonus.wp
-          - --url=http://42bonus.wp
           - --title=42bonus.wp
           - --admin_user=admin
           - —-admin_password=admin
