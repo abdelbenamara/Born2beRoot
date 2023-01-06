@@ -264,8 +264,7 @@
 
     - name: 'Bonus #2 : Install php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-curl php7.4-xml php-json php-zip php-mbstring php-gd php-intl and php-cgi packages'
       ansible.builtin.apt:
-        name: "{{ item }}"
-      loop:
+        name:
         - 'php7.4'
         - 'php7.4-fpm'
         - 'php7.4-mysql'
