@@ -392,13 +392,17 @@
         name: fail2ban
         state: restarted
 
-    - name: 'Bonus #3.2 : Download docker convenience script in /tmp'
+    - name: 'Bonus #3.2 : Install git package'
+      apt:
+        name: git
+
+    - name: 'Bonus #3.3 : Download docker convenience script in /tmp'
       ansible.builtin.get_url:
         url: https://get.docker.com
         dest: /tmp/get-docker.sh
         mode: '0755'
 
-    - name: 'Bonus #3.2 : Install docker engine'
+    - name: 'Bonus #3.3 : Install docker engine'
       ansible.builtin.command:
         cmd: '/tmp/get-docker.sh'
 
