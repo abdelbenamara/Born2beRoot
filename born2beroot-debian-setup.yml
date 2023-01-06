@@ -386,7 +386,22 @@
         dest: /usr/local/bin/wp
         mode: '0755'
 
-    - name: 'Bonus #2 : Setup wordpress with wp-cli'
+    - name: 'Bonus #2 : Config wordpress with wp-cli'
+      ansible.builtin.command:
+        argv: 
+          - /usr/bin/sudo 
+          - -u
+          - www-data
+          - --
+          - /usr/local/bin/wp
+          - core
+          - config
+          - --path=/var/www/html/42bonus.wp
+          - --dbname=wordpress
+          - --dbuser=wordpress_user
+          - --dbpass=wordpress_pss123
+
+    - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
         argv: 
           - /usr/bin/sudo 
@@ -397,6 +412,7 @@
           - core
           - install
           - --path=/var/www/html/42bonus.wp
+          - --url=http://localhost/42bonus.wp
           - --title=42bonus.wp
           - --admin_user=admin
           - —-admin_password=admin
