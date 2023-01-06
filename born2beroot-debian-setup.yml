@@ -390,7 +390,8 @@
       ansible.builtin.command:
         argv: 
           - /usr/bin/sudo 
-          - -u abenamar
+          - -u
+          - abenamar
           - -i
           - --
           - /usr/local/bin/wp
