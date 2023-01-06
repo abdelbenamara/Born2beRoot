@@ -373,7 +373,7 @@
     - name: 'Bonus #2 : Config wordpress with wp-cli'
       ansible.builtin.command:
         argv: 
-          - /usr/bin/sudo 
+          - /usr/bin/sudo
           - -u
           - www-data
           - --
@@ -388,7 +388,7 @@
     - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
         argv: 
-          - /usr/bin/sudo 
+          - /usr/bin/sudo
           - -u
           - www-data
           - --
