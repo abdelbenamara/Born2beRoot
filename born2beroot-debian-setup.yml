@@ -315,17 +315,11 @@
         name: mysql
         state: restarted
 
-    - name: 'Bonus #2 : Download wordpress archive in /tmp'
+    - name: 'Bonus #2 : Download wp-cli in /usr/local/bin'
       ansible.builtin.get_url:
-        url: https://wordpress.org/latest.tar.gz
-        dest: /tmp/wordpress.tar.gz
-
-    - name: 'Bonus #2 : Extract wordpress archive and move it to /var/www/html'
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - '/usr/bin/tar -xvzf /tmp/wordpress.tar.gz --directory /var/www/html'
-        - '/usr/bin/mv /var/www/html/wordpress/ /var/www/html/abenamar.42.bonus'
+        url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        dest: /usr/local/bin/wp
+        mode: '0755'
 
     - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
       ansible.builtin.file:
@@ -335,6 +329,15 @@
         owner: www-data
         group: www-data
         mode: '0755'
+
+    - name: 'Bonus #2 : Download, config and install wordpress with wp-cli'
+      ansible.builtin.command:
+        cmd: "/usr/local/bin/wp core {{ item.key }} --path=/var/www/html/42.abenamar {{ item.value }}"
+      become_user: www-data
+      loop:
+        - { key: 'download', value: '--locale=fr_FR' }
+        - { key: 'config', value: '--dbname=wordpress --dbuser=wordpress_user --dbpass=wordpress_pass' }
+        - { key: 'install', value: '--url=http://localhost/42.abenamar --title=42.abenamar --admin_user=admin —-admin_password=admin —-admin_email=abenamar@student.42.fr' }
 
     - name: 'Bonus #2 : Create folder dedicated to virtual hosts in Lighttpd'
       ansible.builtin.file:
@@ -346,16 +349,16 @@
         path: /etc/lighttpd/lighttpd.conf
         line: 'include_shell "cat /etc/lighttpd/vhosts.d/*.conf"'
 
-    - name: 'Bonus #2 : Create /etc/lighttpd/vhosts.d/abenamar.42.bonus.conf'
+    - name: 'Bonus #2 : Create /etc/lighttpd/vhosts.d/42.abenamar.conf'
       ansible.builtin.lineinfile:
-        path: /etc/lighttpd/vhosts.d/abenamar.42.bonus.conf
+        path: /etc/lighttpd/vhosts.d/42.abenamar.conf
         line: "{{ item }}"
         create: yes
       loop:
-        - '$HTTP["host"] =~ "(^|.)abenamar.42.bonus$" {'
-        - 'server.document-root = "/var/www/html/abenamar.42.bonus"'
-        - 'server.errorlog = "/var/log/lighttpd/abenamar.42.bonus-error.log"'
-        - 'accesslog.filename = "/var/log/lighttpd/abenamar.42.bonus-access.log"'
+        - '$HTTP["host"] =~ "(^|.)42.abenamar$" {'
+        - 'server.document-root = "/var/www/html/42.abenamar"'
+        - 'server.errorlog = "/var/log/lighttpd/42.abenamar-error.log"'
+        - 'accesslog.filename = "/var/log/lighttpd/42.abenamar-access.log"'
         - 'url.rewrite-final = ("^/(.*.php)" => "$0", "^/(.*)$" => "/index.php/$1" )'
         - '}'
 
@@ -363,38 +366,6 @@
       ansible.builtin.service:
         name: lighttpd
         state: restarted
-
-    - name: 'Bonus #2 : Download wp-cli in /usr/local/bin'
-      ansible.builtin.get_url:
-        url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-        dest: /usr/local/bin/wp
-        mode: '0755'
-
-    - name: 'Bonus #2 : Config wordpress with wp-cli'
-      ansible.builtin.command:
-        chdir: /var/www/html/abenamar.42.bonus
-        argv: 
-          - /usr/local/bin/wp
-          - core
-          - config
-          - --dbname=wordpress
-          - --dbuser=wordpress_user
-          - --dbpass=wordpress_pass
-      become_user: www-data
-
-    - name: 'Bonus #2 : Install wordpress with wp-cli'
-      ansible.builtin.command:
-        chdir: /var/www/html/abenamar.42.bonus
-        argv: 
-          - /usr/local/bin/wp
-          - core
-          - install
-          - --url=http://localhost/abenamar.42.bonus
-          - --title=abenamar.42.bonus
-          - --admin_user=admin
-          - —-admin_password=admin
-          - —-admin_email=abenamar@student.42.fr
-      become_user: www-data
 
     - name: 'Bonus #3.1 : Install fail2ban package'
       apt:
