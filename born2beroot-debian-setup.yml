@@ -389,8 +389,9 @@
     - name: 'Bonus #2 : Setup wordpress with wp-cli'
       ansible.builtin.command:
         argv: 
-          - /usr/bin/sudo -u abenamar -i
-          - -- /usr/local/bin/wp core install
+          - /usr/bin/sudo 
+          - -u abenamar -i --
+          - /usr/local/bin/wp core install
           - --path=/var/www/html/42bonus.wp
           - --url=http://42bonus.wp
           - --title=42bonus.wp
