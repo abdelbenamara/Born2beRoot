@@ -288,15 +288,6 @@
         - 'lighttpd'
         - 'php7.4-fpm'
 
-    - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
-      ansible.builtin.file:
-        path: /var/www/html
-        state: directory
-        recurse: yes
-        owner: www-data
-        group: www-data
-        mode: '0755'
-
     - name: 'Bonus #2 : Install mariadb-server package'
       ansible.builtin.apt:
         name: mariadb-server
@@ -322,6 +313,48 @@
     - name: 'Bonus #2 : Restart mysql service'
       ansible.builtin.service:
         name: mysql
+        state: restarted
+
+    - name: 'Bonus #2 : Download and unarchive wordpress'
+      ansible.builtin.unarchive:
+        src: 'https://wordpress.org/latest.tar.gz'
+        dest: /var/www/html/wordpress.42bonus.lan
+        remote_src: yes
+
+    - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: 'Bonus #2 : Create folder dedicated to virtual hosts in Lighttpd'
+      ansible.builtin.file:
+        path: /etc/lighttpd/vhosts.d
+        state: directory
+
+    - name: 'Bonus #2 : Edit /etc/lighttpd/lighttpd.conf to add new virtual hosts'
+      ansible.builtin.lineinfile:
+        path: /etc/lighttpd/lighttpd.conf
+        line: 'include_shell "cat /etc/lighttpd/vhosts.d/*.conf"'
+
+    - name: 'Bonus #2 : Create /etc/lighttpd/vhosts.d/wordpress.42bonus.lan.conf'
+      ansible.builtin.lineinfile:
+        path: /etc/lighttpd/vhosts.d/wordpress.42bonus.lan.conf
+        line: "{{ item }}"
+      loop:
+        - '$HTTP["host"] =~ "(^|.)wordpress.42bonus.lan$" {'
+        - 'server.document-root = "/var/www/html/wordpress.42bonus.lan"'
+        - 'server.errorlog = "/var/log/lighttpd/wordpress.42bonus.lan-error.log"'
+        - 'accesslog.filename = "/var/log/lighttpd/wordpress.42bonus.lan-access.log"'
+        - 'url.rewrite-final = ("^/(.*.php)" => "$0", "^/(.*)$" => "/index.php/$1" )'
+        - '}'
+
+    - name: 'Bonus #2 : Restart lighttpd service'
+      ansible.builtin.service:
+        name: lighttpd
         state: restarted
 
     - name: 'Remove useless packages from the cache'
