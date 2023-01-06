@@ -307,7 +307,7 @@
         - "DROP DATABASE IF EXISTS test"
         - "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'"
         - "CREATE DATABASE wordpress"
-        - "GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY ''"
+        - "GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wordpress_pass'"
         - "FLUSH PRIVILEGES"
 
     - name: 'Bonus #2 : Restart mysql service'
@@ -383,6 +383,7 @@
           - --path=/var/www/html/abenamar.42.bonus
           - --dbname=wordpress
           - --dbuser=wordpress_user
+          - --dbpass=wordpress_pass
 
     - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
