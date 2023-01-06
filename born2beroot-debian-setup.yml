@@ -381,9 +381,9 @@
           - /usr/local/bin/wp
           - core
           - config
-          - --dbname='wordpress'
-          - --dbuser='wordpress_user'
-          - --dbpass='wordpress_pass'
+          - --dbname=wordpress
+          - --dbuser=wordpress_user
+          - --dbpass=wordpress_pass
 
     - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
@@ -396,11 +396,11 @@
           - /usr/local/bin/wp
           - core
           - install
-          - --url='http://localhost/abenamar.42.bonus'
-          - --title='abenamar.42.bonus'
-          - --admin_user='admin'
-          - —-admin_password='admin'
-          - —-admin_email='abenamar@student.42.fr'
+          - --url=http://localhost/abenamar.42.bonus
+          - --title=abenamar.42.bonus
+          - --admin_user=admin
+          - —-admin_password=admin
+          - —-admin_email=abenamar@student.42.fr
 
     - name: 'Bonus #3.1 : Install fail2ban package'
       apt:
