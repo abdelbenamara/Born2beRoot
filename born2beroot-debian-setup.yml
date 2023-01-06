@@ -231,36 +231,9 @@
         state: started
         enabled: yes
 
-    - name: 'Allow http port'
+    - name: 'Bonus #2 : Allow http port'
       ansible.builtin.command:
         cmd: '/usr/sbin/ufw allow proto tcp to any port 80 comment "allow-http"'
-
-    - name: 'Bonus #2 : Install mariadb-server package'
-      ansible.builtin.apt:
-        name: mariadb-server
-
-    - name: 'Bonus #2 : Start and enable mysql service'
-      ansible.builtin.service:
-        name: mysql
-        state: started
-        enabled: yes
-
-    - name: 'Bonus #2 : Secure MariaDB installation and create new database and user for WordPress'
-      ansible.builtin.command:
-        cmd: "{{ item }}"
-      loop:
-        - "/usr/bin/mysql -e \"DELETE FROM mysql.user WHERE User='';\""
-        - "/usr/bin/mysql -e \"DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');\""
-        - "/usr/bin/mysql -e 'DROP DATABASE IF EXISTS test;'"
-        - "/usr/bin/mysql -e \"DELETE FROM mysql.db WHERE Db='test' OR Db='test\\\\_%';\""
-        - "/usr/bin/mysql -e 'CREATE DATABASE wordpress;'"
-        - "/usr/bin/mysql -e \"GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wordpress_pss123';\""
-        - "/usr/bin/mysql -e 'FLUSH PRIVILEGES;'"
-
-    - name: 'Restart mysql service'
-      ansible.builtin.service:
-        name: mysql
-        state: restarted
 
     - name: 'Bonus #2 : Install php7.4 php7.4-fpm php7.4-mysql php7.4-cli php7.4-curl php7.4-xml php-json php-zip php-mbstring php-gd php-intl and php-cgi packages'
       ansible.builtin.apt:
@@ -277,6 +250,64 @@
         - 'php-gd'
         - 'php-intl'
         - 'php-cgi'
+
+    - name: 'Bonus #2 : Edit php7.4-fpm configuration file'
+      ansible.builtin.lineinfile:
+        path: /etc/php/7.4/fpm/pool.d/www.conf
+        regexp: '^listen ='
+        line: 'listen = 127.0.0.1:9000'
+
+    - name: 'Bonus #2 : Edit lighttpd 15-fastcgi-php configuration file'
+      ansible.builtin.lineinfile:
+        path: /etc/lighttpd/conf-available/15-fastcgi-php.conf
+        regexp: "^(\\s+){{ item.key }}"
+        line: "\\1{{ item.value }}"
+        backrefs: yes
+      loop:
+        - { key: '"bin-path" =>', value: '"host" => "127.0.0.1",' }
+        - { key: '"socket" =>', value: '"port" => "9000",' }
+
+    - name: 'Bonus #2 : Enable php-fpm on lighttpd'
+      ansible.builtin.command:
+        cmd: "/usr/bin/lighty-enable-mod {{ item }}"
+      loop:
+        - 'fastcgi'
+        - 'fastcgi-php'
+
+    - name: 'Bonus #2 : Restart lighttpd and php7.4-fpm services'
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: restarted
+      loop:
+        - 'lighttpd'
+        - 'php7.4-fpm'
+
+    - name: 'Bonus #2 : Install mariadb-server package'
+      ansible.builtin.apt:
+        name: mariadb-server
+
+    - name: 'Bonus #2 : Start and enable mysql service'
+      ansible.builtin.service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: 'Bonus #2 : Secure MariaDB installation and create new database and user for WordPress'
+      ansible.builtin.command:
+        cmd: "/usr/bin/mysql -e \"{{ item }};\""
+      loop:
+        - "DELETE FROM mysql.user WHERE User=''"
+        - "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+        - "DROP DATABASE IF EXISTS test"
+        - "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\\\_%'"
+        - "CREATE DATABASE wordpress"
+        - "GRANT ALL PRIVILEGES on wordpress.* TO 'wordpress_user'@'localhost' IDENTIFIED BY 'wordpress_pss123'"
+        - "FLUSH PRIVILEGES"
+
+    - name: 'Bonus #2 : Restart mysql service'
+      ansible.builtin.service:
+        name: mysql
+        state: restarted
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
