@@ -355,6 +355,7 @@
       ansible.builtin.lineinfile:
         path: /etc/lighttpd/vhosts.d/wordpress.42bonus.lan.conf
         line: "{{ item }}"
+        create: yes
       loop:
         - '$HTTP["host"] =~ "(^|.)wordpress.42bonus.lan$" {'
         - 'server.document-root = "/var/www/html/wordpress.42bonus.lan"'
