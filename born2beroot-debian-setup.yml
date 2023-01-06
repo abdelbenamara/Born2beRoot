@@ -373,11 +373,8 @@
     - name: 'Bonus #2 : Config wordpress with wp-cli'
       ansible.builtin.command:
         chdir: /var/www/html/abenamar.42.bonus
+        become_user: www-data
         argv: 
-          - /usr/bin/sudo
-          - -u
-          - www-data
-          - --
           - /usr/local/bin/wp
           - core
           - config
@@ -388,11 +385,8 @@
     - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
         chdir: /var/www/html/abenamar.42.bonus
+        become_user: www-data
         argv: 
-          - /usr/bin/sudo
-          - -u
-          - www-data
-          - --
           - /usr/local/bin/wp
           - core
           - install
