@@ -115,15 +115,15 @@
 
     - name: 'Download monitoring.sh'
       ansible.builtin.get_url:
-        url: 'https://raw.githubusercontent.com/abdelbenamara/Born2beRoot/main/monitoring.sh'
-        dest: '/usr/local/bin/monitoring.sh'
+        url: https://raw.githubusercontent.com/abdelbenamara/Born2beRoot/main/monitoring.sh
+        dest: /usr/local/bin/monitoring.sh
         mode: '0111'
 
     - name: 'Cron monitoring.sh'
       ansible.builtin.cron:
         name: 'wall monitoring job'
-        minute: "*/10"
-        job: '/usr/local/bin/monitoring.sh'
+        minute: '*/10'
+        job: /usr/local/bin/monitoring.sh
 
     - name: 'Bonus #1 : Install lvm2 package'
       ansible.builtin.apt:
@@ -317,19 +317,20 @@
 
     - name: 'Bonus #2 : Download wordpress archive in /tmp'
       ansible.builtin.get_url:
-        url: 'https://wordpress.org/latest.tar.gz'
-        dest: '/tmp/latest.tar.gz'
+        url: https://wordpress.org/latest.tar.gz
+        dest: /tmp/latest.tar.gz
 
     - name: 'Bonus #2 : Extract wordpress archive and move it to /var/www/html'
       ansible.builtin.command:
         cmd: "{{ item }}"
       loop:
         - '/usr/bin/tar -xvzf /tmp/latest.tar.gz --directory /var/www/html'
-        - '/usr/bin/mv /var/www/html/wordpress/ /var/www/html/wordpress.42bonus.lan'
+        - '/usr/bin/mv /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php'
+        - '/usr/bin/mv /var/www/html/wordpress/ /var/www/html/42bonus.wp'
 
     - name: 'Bonus #2 : Delete wordpress archive from /tmp'
       ansible.builtin.file:
-        path: '/tmp/latest.tar.gz'
+        path: /tmp/latest.tar.gz
         state: absent
 
     - name: 'Bonus #2 : Ensure /var/www/html has recursively correct ownership and rights'
@@ -351,16 +352,16 @@
         path: /etc/lighttpd/lighttpd.conf
         line: 'include_shell "cat /etc/lighttpd/vhosts.d/*.conf"'
 
-    - name: 'Bonus #2 : Create /etc/lighttpd/vhosts.d/wordpress.42bonus.lan.conf'
+    - name: 'Bonus #2 : Create /etc/lighttpd/vhosts.d/42bonus.wp.conf'
       ansible.builtin.lineinfile:
-        path: /etc/lighttpd/vhosts.d/wordpress.42bonus.lan.conf
+        path: /etc/lighttpd/vhosts.d/42bonus.wp.conf
         line: "{{ item }}"
         create: yes
       loop:
-        - '$HTTP["host"] =~ "(^|.)wordpress.42bonus.lan$" {'
-        - 'server.document-root = "/var/www/html/wordpress.42bonus.lan"'
-        - 'server.errorlog = "/var/log/lighttpd/wordpress.42bonus.lan-error.log"'
-        - 'accesslog.filename = "/var/log/lighttpd/wordpress.42bonus.lan-access.log"'
+        - '$HTTP["host"] =~ "(^|.)42bonus.wp$" {'
+        - 'server.document-root = "/var/www/html/42bonus.wp"'
+        - 'server.errorlog = "/var/log/lighttpd/42bonus.wp-error.log"'
+        - 'accesslog.filename = "/var/log/lighttpd/42bonus.wp-access.log"'
         - 'url.rewrite-final = ("^/(.*.php)" => "$0", "^/(.*)$" => "/index.php/$1" )'
         - '}'
 
@@ -368,6 +369,26 @@
       ansible.builtin.service:
         name: lighttpd
         state: restarted
+
+    - name: 'Bonus #2 :Edit /var/www/html/42bonus.wp/wp-config.php'
+      ansible.builtin.lineinfile:
+        path: /var/www/html/42bonus.wp/wp-config.php
+        regexp: "{{ item.key }}"
+        line: "{{ item.value }}"
+      loop:
+        - { key: 'database_name_here', value: 'wordpress' }
+        - { key: 'username_here', value: 'wordpress_user' }
+        - { key: 'password_here', value: 'wordpress_pss123' }
+
+    - name: 'Bonus #2 : Download wp-cli in /usr/local/bin'
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        dest: /usr/local/bin/wp
+        mode: '0755'
+
+    - name: 'Bonus #2 : Setup wordpress with wp-cli'
+      ansible.builtin.command:
+        cmd: "/usr/local/bin wp core install - url=http://42bonus.wp - title=42bonus.wp - admin_user=admin — admin_password=admin — admin_email=abenamar@student.42.fr"
 
     - name: 'Remove useless packages from the cache'
       ansible.builtin.apt:
