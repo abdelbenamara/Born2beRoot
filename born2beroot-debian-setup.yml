@@ -373,7 +373,6 @@
     - name: 'Bonus #2 : Config wordpress with wp-cli'
       ansible.builtin.command:
         chdir: /var/www/html/abenamar.42.bonus
-        become_user: www-data
         argv: 
           - /usr/local/bin/wp
           - core
@@ -381,11 +380,11 @@
           - --dbname=wordpress
           - --dbuser=wordpress_user
           - --dbpass=wordpress_pass
+      become_user: www-data
 
     - name: 'Bonus #2 : Install wordpress with wp-cli'
       ansible.builtin.command:
         chdir: /var/www/html/abenamar.42.bonus
-        become_user: www-data
         argv: 
           - /usr/local/bin/wp
           - core
@@ -395,6 +394,7 @@
           - --admin_user=admin
           - —-admin_password=admin
           - —-admin_email=abenamar@student.42.fr
+      become_user: www-data
 
     - name: 'Bonus #3.1 : Install fail2ban package'
       apt:
