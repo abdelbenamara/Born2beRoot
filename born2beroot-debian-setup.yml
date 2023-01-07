@@ -61,6 +61,16 @@
         regexp: '^127\.0\.1\.1'
         line: "127.0.1.1\tabenamar42"
 
+    - name: 'Edit /etc/login.defs'
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: "^{{ item.key }}"
+        line: "{{ item.key }}\t{{ item.value }}"
+      loop:
+        - { key: 'PASS_MAX_DAYS', value: '30' }
+        - { key: 'PASS_MIN_DAYS', value: '2' }
+        - { key: 'PASS_WARN_AGE', value: '7' }
+
     - name: 'Udpate password policy to respect 42 guidelines'
       ansible.builtin.command:
         cmd: "/usr/bin/chage -M 30 -m 2 -W 7 {{ item }}"
@@ -68,15 +78,15 @@
         - 'abenamar'
         - 'root'
 
-    - name: 'Install libpam-cracklib package'
+    - name: 'Install libpam-pwquality package'
       ansible.builtin.apt:
-        name: libpam-cracklib
+        name: libpam-pwquality
 
     - name: 'Edit /etc/pam.d/common-password to respect 42 guidelines'
       ansible.builtin.lineinfile:
         path: /etc/pam.d/common-password
         insertbefore: '^# and here are more per-package modules'
-        line: "\npassword required pam_cracklib.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root\n"
+        line: "\npassword required pam_pwquality.so minlen=10 ucredit=-1 lcredit=-1 dcredit=-1 maxrepeat=3 reject_username difok=7 enforce_for_root\n"
 
     - name: 'Install sudo package'
       ansible.builtin.apt:
@@ -90,7 +100,7 @@
         line: "Defaults\t{{ item.value }}"
       loop:
         - { key: 'passwd_tries', value: 'passwd_tries=3' }
-        - { key: 'badpass_message', value: 'badpass_message="Oh no! You have not really your sudo password, huh ??"' }
+        - { key: 'badpass_message', value: 'badpass_message="Oh no! You have not really forgotten your sudo password, huh ??"' }
         - { key: 'log_input', value: 'log_input' }
         - { key: 'log_output', value: 'log_output' }
         - { key: 'iolog_dir', value: 'iolog_dir="/var/log/sudo"' }
