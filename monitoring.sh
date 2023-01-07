@@ -5,8 +5,8 @@ main () {
 	echo "#CPU physical : $(grep '^physical id' /proc/cpuinfo | sort -u | wc -l)"
 	processors=$(grep -c '^processor' /proc/cpuinfo)
 	echo "#vCPU : $processors"
-	free --si -m | grep '^Mem' | awk '{ printf "#Memory Usage : %d/%dMB (%.2f%%)\n", $3, $2, $3 / $2 * 100 }'
-	df --si -m | grep '/$' | awk '{ print "#Disk Usage : " $3 "/" $2 "MB (" $5 ")" }'
+	free -m | grep '^Mem' | awk '{ printf "#Memory Usage : %d/%dMB (%.2f%%)\n", $3, $2, $3 / $2 * 100 }'
+	df --total -m | tail -n 1 | awk '{ print "#Disk Usage : " $3 "/" $2 "MB (" $5 ")" }'
 	cat /proc/loadavg | awk -v processors="$processors" '{ printf "#CPU load : %.1f%%\n", $1 / processors * 100 }'
 	echo "#Last boot : $(who -b | grep -o '....-..-.. ..:..')"
 	lsblk | grep 'lvm' | wc -l | awk '{ printf "#LVM use : %s\n", ($1 > 0 ? "yes" : "no") }'
