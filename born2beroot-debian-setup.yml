@@ -380,15 +380,15 @@
         state: restarted
 
     - name: 'Bonus #3.1 : Install fail2ban package'
-      apt:
+      ansible.builtin.apt:
         name: fail2ban
 
     - name: 'Bonus #3.1 : Edit fail2ban jail custom conf settings'
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/fail2ban/jail.d/custom.conf
         line: "{{ item }}"
         create: yes
-      with_items:
+      loop:
         - '[DEFAULT]'
         - 'bantime = 72h'
         - 'findtime = 15m'
@@ -400,12 +400,12 @@
         - 'maxretry = 5'
 
     - name: 'Bonus #3.1 : Restart fail2ban service'
-      service:
+      ansible.builtin.service:
         name: fail2ban
         state: restarted
 
     - name: 'Bonus #3.2 : Install git package'
-      apt:
+      ansible.builtin.apt:
         name: git
 
     - name: 'Bonus #3.3 : Download docker convenience script in /tmp'
